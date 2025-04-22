@@ -1,10 +1,10 @@
 const mark = {
-    "@chatgpt": "https://chat.openai.com/",
-    "@alist": "http://cloud.yuege.site",
-    "@shuangpin": "https://index.yuege.site/shuangpin",
+    "@gpt": "https://chat.openai.com/",
+    "@alist": "http://cloud.yuege.website",
+    "@shuangpin": "https://index.yuege.website/shuangpin",
     "@flomo": "https://v.flomoapp.com/mine",
-    "@gpt": "https://gpt.yuege.site",
-    "@live": "http://live.yj1211.work/index/home/follows"
+    "@live": "http://live.yj1211.work/index/home/follows",
+    "@ais": "https://metaso.cn/"
 
 }
 

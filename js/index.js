@@ -1,15 +1,16 @@
 async function viewUrl(searchWord) {
 	searchWord = searchWord.trim()
-	if (searchWord.startsWith('@')) {
-		try{
-			const { viewMark } = await import('/js/fastlink.js')
-			const res = viewMark(searchWord)
-			if (res) return
-		} catch(e) {
-			console.log(e.stack)
-		}
-	}
-	var url = "https://search.yuege.site/search?q=" + searchWord;
+	// if (searchWord.startsWith('@')) {
+	// 	try{
+	// 		const { viewMark } = await import('/js/fastlink.js')
+	// 		const res = viewMark(searchWord)
+	// 		if (res) return
+	// 	} catch(e) {
+	// 		console.log(e.stack)
+	// 	}
+	// }
+	// var url = "https://www.bing.com/search?q=" + searchWord;
+	const url = "https://search.yuege.website/search?q=" + searchWord
 	window.location.href = url;
 	//window.open(url);
 }
