@@ -1,10 +1,12 @@
 export class EventHandler {
     constructor() {
         this.handlers = new Map();
+        this.init();
     }
 
     init() {
-        this.registerCoreEvents();
+        this.cancelDefaultEvents();
+        // this.registerCoreEvents();
         this.registerGestures();
     }
 
@@ -29,9 +31,36 @@ export class EventHandler {
         });
     }
 
+    registerGestures() {
+
+    }
+
     register(eventName, callback) {
+
     }
 
     registerSwipe(event) {
+    }
+
+    registerTouch() {
+    }
+
+    registerWheel() {
+    }
+
+    registerKeyboard() {
+    }
+
+    unregister(eventName) {
+    }
+
+    emit(eventName, ...args) {
+    }
+
+    on(eventName, callback) {
+    }
+
+    cancelDefaultEvents() {
+        event.preventDefault();
     }
 }

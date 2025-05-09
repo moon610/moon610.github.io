@@ -45,7 +45,7 @@ export class ViewManager {
     }
 
     setUpUI() {
-      document.querySelector('.page-info').textContent = this.virtualScroller.currentPage + 1 + '/' + this.virtualScroller.totalPages;
+
     }
 
     updateLayout() {

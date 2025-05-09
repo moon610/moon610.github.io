@@ -10,21 +10,17 @@ body {
     width: 100%;
     height: 100vh;
     margin: 0 auto;
-    font-family: ui-sans-serif;
-    line-height: 1.8;
     position: relative;
 }
 .reader-container {
     box-sizing: border-box;
     background: #262628;
-    max-width: 800px;
+    max-width: 1000px;
     min-width: 375px;
     width: 100%;
     height: calc(100% - 132px);
     max-width: calc(100vw-224px);
     margin: 0 auto;
-    font-family: ui-sans-serif;
-    line-height: 1.8;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -34,29 +30,37 @@ body {
 .reader-content {
     box-sizing: border-box;
     background: #1c1c1d;
-    color: rgba(202, 205, 210, 0.75);
+    color: rgba(232, 235, 240, 0.75);
     font-size: 18px;
     font-family: ui-sans-serif;
     line-height: 1.8;
     letter-spacing: 0.08em;
-    min-height: 80vh;
+    /* min-height: 80vh; */
     min-width: 375px;
     word-wrap: break-word;
     overflow-wrap: break-word;
     white-space: pre-wrap;
     width: 100%;
-    /* position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%); */
+    height: 100%;
     margin: 0 auto;
     border-radius: 16px;
     padding: 80px 10%;
-    margin-top: 72px;
+    /* margin-top: 72px; */
+    overflow: hidden;
 }
 
-.reader-header{
-  height: 72px;
+.reader-content .page {
+    overflow: hidden;
+    height: 100%;
+    width: 85%;
+    margin: auto;
+    text-align: justify;
+    text-justify: inter-word; /* 可选，增强兼容性 */
+}
+
+.reader-header {
+    width: 100%;
+    height: 72px;
 }
 
 .progress-bar {
@@ -66,7 +70,7 @@ body {
 }
 
 .reader-controls {
-  box-sizing: border-box;
+    box-sizing: border-box;
     position: absolute;
     bottom: 0;
     display: flex;
@@ -81,41 +85,53 @@ body {
 }
 
 button {
-  height: 32px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #b2b4b8;
-  background-color: rgba(0,0,0,0);
-  border-radius: 100px;
-  border: 1px solid hsla(0, 0%, 100%, .1);
-  cursor: pointer;
-  z-index: 3;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding-left: 8px;
-  padding-right: 12px;
+    height: 32px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #b2b4b8;
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 100px;
+    border: 1px solid hsla(0, 0%, 100%, 0.1);
+    cursor: pointer;
+    z-index: 3;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding-left: 8px;
+    padding-right: 12px;
 }
 
 /* 移动端适配 */
 @media (max-width: 767px) {
     .reader-container {
-        font-size: 18px;
+        height: 100%;
+        background-color: #1c1c1d;
+    }
+    .reader-header {
+        position: absolute;
     }
 
     .reader-content {
+        /* height: calc(100vh - 72px - 72px);
+        position: absolute;
+        margin-bottom: 72px; */
+        padding: 50px 0;
+        font-size: 20px;
+        line-height: 1.5;
+        font-family: "Source Han Serif CN VF";
+        font-weight: "800";
     }
 
     button {
         padding: 12px 25px;
-        font-size: 18px;
+        font-size: 12px;
     }
 }
 
 /* 夜间模式 */
 .night-mode {
-    background-color: #1a1a1a;
+    background-color: #1c1c1d;
     color: #e0e0e0;
 }
 
