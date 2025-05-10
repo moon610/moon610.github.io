@@ -17,7 +17,7 @@ class NovelReader {
     // 初始化核心模块
     this.dataProcessor = new DataProcessor(this.options);
     this.viewManager = new ViewManager(this.options);
-    this.eventHandler = new EventHandler();
+    this.eventHandler = new EventHandler(this.options);
     this.configManager = new ConfigManager();
     // this.pluginSystem = new PluginSystem(this);
 
@@ -56,7 +56,7 @@ class NovelReader {
 
   setupDefaultEvents() {
     // 键盘翻页
-    this.eventHandler.register('keydown', (e) => {
+    this.eventHandler.on('keydown', (e) => {
       if (e.key === 'ArrowLeft') this.viewManager.prevPage();
       if (e.key === 'ArrowRight') this.viewManager.nextPage();
     });
@@ -86,12 +86,11 @@ if (!fileUrl)
 else {
   const response = fetch(fileUrl).then((response) => {
     // 检查响应是否成功
-    if (!response.ok) {
+    if (!response.ok || response.status !== 200) {
       throw new Error(`HTTP 错误！状态码: ${response.status}`);
     }
 
     // 读取文件内容为文本
-    const contentDiv = document.querySelector('.main')
     response.text().then(data => {
       // 将内容显示到页面中
       // contentDiv.textContent = data;
