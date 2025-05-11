@@ -89,6 +89,12 @@ else {
     if (!response.ok || response.status !== 200) {
       throw new Error(`HTTP 错误！状态码: ${response.status}`);
     }
+    const bookname = fileUrl.match(/.*\/([^.]*)\.txt\S*$/);
+    if(bookname) {
+      document.title = bookname[1];
+      reader.bookname = bookname[1];
+      reader.viewManager.setBookName(bookname[1]);
+    }
 
     // 读取文件内容为文本
     response.text().then(data => {

@@ -23,11 +23,12 @@ export class ViewManager {
       <div class="root-view">
         <div class="reader-container">
           <div class="reader-header">
-            <div class="progress-bar"></div>
+            <div class="chapter-name">第一章</div>
           </div>
           <div class="reader-content"></div>
           <div class="reader-controls">
             <button class="prev-btn">&lt;上一页</button>
+            <div class="book-name">书名</div>
             <div class="page-info"></div>
             <button class="next-btn">下一页&gt;</button>
           </div>
@@ -44,7 +45,11 @@ export class ViewManager {
       this.nextBtn.addEventListener('click', () => this.nextPage());
     }
 
-    setUpUI() {
+    setBookName(name) {
+      this.container.querySelector('.book-name').textContent = name;
+    }
+
+    setUpUI(options) {
 
     }
 
@@ -69,7 +74,7 @@ export class ViewManager {
 
     updateProgress() {
       const progress = this.virtualScroller.getProgress();
-      this.container.querySelector('.progress-bar').style.width = `${progress}%`;
+      // this.container.querySelector('.progress-bar').style.width = `${progress}%`;
     }
 
     on(event, callback){

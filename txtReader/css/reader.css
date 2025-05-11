@@ -25,6 +25,7 @@ body {
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
+    color: rgba(232, 235, 240, 0.75);
 }
 
 .reader-content {
@@ -59,30 +60,35 @@ body {
 }
 
 .reader-header {
-    width: 100%;
+    width: 85%;
     height: 72px;
+    margin: auto;
+    padding-top: 15px;
+    font-size: 14px;
+    color: rgba(232, 235, 240, 0.55);
 }
 
-.progress-bar {
-    height: 3px;
-    background: #007bff;
-    transition: width 0.3s;
-}
 
 .reader-controls {
     box-sizing: border-box;
     position: absolute;
-    bottom: 0;
+    bottom: 10px;
+    left: 0;
+    right: 0;
     display: flex;
     justify-content: space-between; /* 按钮两端对齐，中间间距自动分配 */
     align-items: center; /* 垂直居中 */
-    padding: 0 10%;
-    width: 100%; /* 占满父容器宽度 */
-    color: rgba(202, 205, 210, 0.75);
+    margin: auto;
+    width: 85%; /* 占满父容器宽度 */
+    color: rgba(202, 205, 210, 0.55);
 }
 
-.reader-controls .page-info {
+.reader-controls .book-name, .reader-header .chapter-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
+
 
 button {
     height: 32px;
@@ -110,23 +116,28 @@ button {
     }
     .reader-header {
         position: absolute;
+        left: 0;
+        right: 0;
     }
 
     .reader-content {
         /* height: calc(100vh - 72px - 72px);
         position: absolute;
         margin-bottom: 72px; */
-        padding: 50px 0;
+        padding: 40px 0;
         font-size: 20px;
         line-height: 1.5;
         font-family: "Source Han Serif CN VF";
         font-weight: "800";
     }
 
+    .reader-controls {
+    }
+
     button {
         padding: 12px 25px;
         font-size: 12px;
-        visibility: hidden;
+        display: none;
     }
 }
 

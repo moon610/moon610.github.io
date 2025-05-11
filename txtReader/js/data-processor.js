@@ -26,7 +26,7 @@ export class DataProcessor {
       let match = this.chapterRegex.exec(text);
 
       if(match === null) {
-        console.log('获取标题:', match)
+        console.log('获取章节:', match)
         return [{ title: '未匹配到章节', start: 0, end: text.length }];
       }
 
