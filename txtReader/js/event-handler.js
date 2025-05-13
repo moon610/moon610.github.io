@@ -87,9 +87,9 @@ export class EventHandler {
             const deltaX = touchEndX - touchStartX
             const deltaT = touchEndTime - touchStartTime;
             const touchSpeed = deltaX / deltaT;
-            if (touchSpeed > 0.3) {
+            if (touchSpeed > 0.2) {
                 handler.right();
-            } else if (touchSpeed < -0.3) {
+            } else if (touchSpeed < -0.2) {
                 handler.left();
             }
             // console.log(touchSpeed)

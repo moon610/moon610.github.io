@@ -24,9 +24,9 @@ export class DataProcessor {
       const chapters = [];
       let lastIndex = 0;
       let match = this.chapterRegex.exec(text);
+      console.log('获取章节:', match)
 
-      if(match === null) {
-        console.log('获取章节:', match)
+      if(true || match === null) {
         return [{ title: '未匹配到章节', start: 0, end: text.length }];
       }
 

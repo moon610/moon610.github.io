@@ -25,10 +25,12 @@ export class ViewManager {
           <div class="reader-header">
             <div class="chapter-name">第一章</div>
           </div>
-          <div class="reader-content"></div>
+          <div class="reader-content">
+            <div class="page"></div>
+          </div>
           <div class="reader-controls">
             <button class="prev-btn">&lt;上一页</button>
-            <div class="book-name">书名</div>
+            <div class="book-name"></div>
             <div class="page-info"></div>
             <button class="next-btn">下一页&gt;</button>
           </div>

@@ -4,7 +4,7 @@ export class VirtualScroller {
     this.container = container;
     this.fullText = '无内容';
     this.cache = new Map();
-    this.pages = [[0, 10]];
+    this.pages = [];
     this.totalPages = 1;
     this.currentPage = 0;
 
@@ -25,29 +25,37 @@ export class VirtualScroller {
     this.debounceDelay = 2000; // 2秒防抖延迟
   }
 
+  _init() {
+
+  }
+
   loadData(fullText) {
     this.fullText = fullText;
-    this.pages = this.calculateEveryPageSize(fullText);
-    this.totalPages = this.pages.length;
+    // this.pages = this.calculateEveryPageSize(fullText);
+    // this.totalPages = this.pages.length;
+    this.pages = this.calculateNextPageSize(fullText);
     this.renderCurrentPage();
   }
 
   renderCurrentPage() {
-    this.container.innerHTML = ''; // 清空容器
+    // this.container.innerHTML = ''; // 清空容器
     document.querySelector('.page-info').textContent = this.currentPage + 1 + '/' + this.totalPages;
 
     const start = this.pages[this.currentPage][0];
     const end = this.pages[this.currentPage][1];
 
-    const pageElement = document.createElement('div');
-    pageElement.className = 'page';
+    const pageElement = document.querySelector('.reader-content .page');
+    // pageElement.className = 'page';
     pageElement.textContent = this.fullText.slice(start, end);
 
-    this.container.appendChild(pageElement);
+    // this.container.appendChild(pageElement);
   }
 
   goToPage(pageNumber) {
     if (pageNumber < 0 || pageNumber >= this.totalPages) return this.currentPage + 1 + '/' + this.totalPages;
+    if (!this.pages[pageNumber] && this.pages.at(-1)[1] !== this.fullText.length) {
+      this.calculateNextPageSize(this.fullText);
+    }
     this.currentPage = pageNumber;
     this.renderCurrentPage();
     return this.currentPage + 1 + '/' + this.totalPages;
@@ -95,7 +103,7 @@ export class VirtualScroller {
 
     let low = 0;
     // let high = text.length;
-    let high =  Math.min(text.length, 1000);
+    let high = Math.min(text.length, 1000);
     let best = 0;
 
     while (low <= high) {
@@ -129,6 +137,30 @@ export class VirtualScroller {
     }
     console.log(pages);
     return pages;
+  }
+
+  calculateNextPageSize(text) {
+    //计算后面5页页切片
+    if(this.pages.length - this.currentPage > 1) {
+      return this.pages;
+    }
+    const maxCharsEveryPage = 1500;
+    const nextPageCount = 5;
+    let maxText = '', start = 0, end = 0;
+    if (this.pages.length === 0) {
+      maxText = text.slice(0, maxCharsEveryPage * nextPageCount);
+    } else {
+      start = this.pages.at(-1)[1];
+      maxText = text.slice(start, start + maxCharsEveryPage * nextPageCount);
+    }
+    for (let i = 0; i < nextPageCount && maxText.length !== 0; i++) {
+      end = this.calculateMaxCharsInContainer(maxText);
+      maxText = maxText.slice(end);
+      this.pages.push([start, start += end]);
+    }
+    this.totalPages = Math.ceil(this.pages.length + (this.fullText.length - this.pages.at(-1)[1]) / (this.pages.at(-1)[1] / this.pages.length));
+
+    return this.pages;
   }
 
   handleResize() {

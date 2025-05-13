@@ -2,7 +2,9 @@
 import { DataProcessor } from './data-processor.js';
 import { ViewManager } from './view-manager.js';
 import { EventHandler } from './event-handler.js';
+import { ChunkedString } from './chunkedString.js';
 import { ConfigManager } from './config-manager.js';
+import { Utils } from './util.js';
 // import PluginSystem from './plugin-system.js';
 
 class NovelReader {
@@ -19,6 +21,8 @@ class NovelReader {
     this.viewManager = new ViewManager(this.options);
     this.eventHandler = new EventHandler(this.options);
     this.configManager = new ConfigManager();
+    this.chunkedString = new ChunkedString();
+    this.utils = new Utils();
     // this.pluginSystem = new PluginSystem(this);
 
     // 初始化模块通信
@@ -28,6 +32,7 @@ class NovelReader {
 
   async load(content) {
     try {
+      // this.chunkedString._init(content);
       const processedData = await this.dataProcessor.process(content);
       this.viewManager.render(processedData);
       // this.viewManager.updateProgress();
@@ -55,10 +60,11 @@ class NovelReader {
   }
 
   setupDefaultEvents() {
-    // 键盘翻页
-    this.eventHandler.on('keydown', (e) => {
-      if (e.key === 'ArrowLeft') this.viewManager.prevPage();
-      if (e.key === 'ArrowRight') this.viewManager.nextPage();
+    this.eventHandler.on('prePage', () => {
+      this.viewManager.prevPage();
+    });
+    this.eventHandler.on('nextPage', () => {
+      this.viewManager.nextPage();
     });
 
     // 移动端手势
@@ -89,19 +95,17 @@ else {
     if (!response.ok || response.status !== 200) {
       throw new Error(`HTTP 错误！状态码: ${response.status}`);
     }
-    const bookname = fileUrl.match(/.*\/([^.]*)\.txt\S*$/);
-    if(bookname) {
+    const bookname = fileUrl.match(/.*\/([^.]*)\.txt[\S\s]*$/);
+    if (bookname) {
       document.title = bookname[1];
       reader.bookname = bookname[1];
       reader.viewManager.setBookName(bookname[1]);
     }
 
     // 读取文件内容为文本
-    response.text().then(data => {
-      // 将内容显示到页面中
-      // contentDiv.textContent = data;
+    reader.utils.getChar(response).then(data => {
       reader.load(data)
-    });
+    })
   }).catch(error => {
     console.error('发生错误:', error);
     reader.load('内容加载失败')
