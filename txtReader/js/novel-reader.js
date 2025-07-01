@@ -11,17 +11,17 @@ class NovelReader {
   constructor(options = {}) {
     this.options = {
       container: '#reader-container',
-      chapterRegex: /第[一二三四五六七八九十百千零]+章/g,
+      chapterRegex: /^[ 　\\t]{0,4}(?:序章|序言|卷首语|扉页|楔子|正文(?!完|结)|终章|后记|尾声|番外|第?\\s{0,4}[\\d〇零一二两三四五六七八九十百千万壹贰叁肆伍陆柒捌玖拾佰仟]+?\\s{0,4}(?:章|节(?!课)|卷|集(?![合和])|部(?![分赛游])|篇(?!张))).{0,30}$/g,
       adPatterns: [/欢迎访问.*网站/g, /\(本章完\)/g],
       ...options
     };
 
     // 初始化核心模块
-    this.dataProcessor = new DataProcessor(this.options);
-    this.viewManager = new ViewManager(this.options);
     this.eventHandler = new EventHandler(this.options);
+    this.viewManager = new ViewManager(this.options);
     this.configManager = new ConfigManager();
-    this.chunkedString = new ChunkedString();
+    // this.chunkedString = new ChunkedString();
+    this.dataProcessor = new DataProcessor(this.options);
     this.utils = new Utils();
     // this.pluginSystem = new PluginSystem(this);
 
@@ -43,35 +43,53 @@ class NovelReader {
 
   setupModuleCommunication() {
     // 数据处理完成事件
-    this.dataProcessor.on('process-complete', (data) => {
-      this.viewManager.render(data);
-    });
+    // this.dataProcessor.on('process-complete', (data) => {
+    //   this.viewManager.render(data);
+    // });
 
     // 视图翻页事件
-    this.viewManager.on('page-change', (page) => {
-      this.currentPage = page;
-      this.configManager.update('lastPage', page);
-    });
+    // this.viewManager.on('page-change', (page) => {
+    //   this.currentPage = page;
+    //   this.configManager.update('lastPage', page);
+    // });
 
     // 配置变更事件
-    this.configManager.on('config-update', (config) => {
-      this.viewManager.applyStyles(config);
+    // this.configManager.on('config-update', (config) => {
+    //   this.viewManager.applyStyles(config);
+    // });
+    // 新增监听：重新划分章节
+    this.viewManager.on('reprocess-chapters', async () => {
+      const content = await this.utils.fetchContentAgain(); // 假设你有方法重新获取内容
+      const processedData = await this.dataProcessor.process(content);
+      this.viewManager.render(processedData);
     });
   }
 
   setupDefaultEvents() {
-    this.eventHandler.on('prePage', () => {
-      this.viewManager.prevPage();
-    });
-    this.eventHandler.on('nextPage', () => {
-      this.viewManager.nextPage();
-    });
+    const loadingIndicator = document.querySelector('.loading');
+    let lastCallbackTime = performance.now();
+    const checkForLag = () => {
+      const now = performance.now();
+      const timeSinceLastCheck = now - lastCallbackTime;
 
-    // 移动端手势
-    this.eventHandler.registerSwipe({
-      left: () => this.viewManager.nextPage(),
-      right: () => this.viewManager.prevPage()
-    });
+      // 如果超过 500ms 没有进入 idle 回调，则认为卡顿
+      if (timeSinceLastCheck > 500) {
+        loadingIndicator.style.visibility = 'visible';
+      } else {
+        loadingIndicator.style.visibility = 'hidden';
+      }
+      // 更新最后检查时间
+      lastCallbackTime = now;
+
+      // 使用 setTimeout 作为兜底
+      setTimeout(() => {
+        requestIdleCallback(checkForLag, { timeout: 1000 });
+      }, 200); // 每 200ms 尝试一次 idle callback
+    };
+
+    // 启动首次检测
+    // requestIdleCallback(checkForLag, { timeout: 1000 });
+
   }
 }
 

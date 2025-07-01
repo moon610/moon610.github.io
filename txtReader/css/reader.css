@@ -3,6 +3,33 @@ body {
     height: 100%;
 }
 
+.loading {
+    visibility: hidden;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    color: #fff;
+    text-align: center;
+    z-index: 9999;
+    opacity: 0.8;
+    border-radius: 50%;
+    overflow: hidden;
+    width: 100px;
+    height: 100px;
+    transition: all 0.5s ease;
+    pointer-events: none;
+    user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.loading img {
+    width: 200px;
+    height: 150px;
+}
+
 .root-view {
     box-sizing: border-box;
     background: #262628;
@@ -16,39 +43,40 @@ body {
 .reader-container {
     box-sizing: border-box;
     background: #262628;
-    max-width: 1000px;
     min-width: 375px;
-    width: 100%;
-    height: calc(100% - 132px);
-    max-width: calc(100vw-224px);
+    width: 80%;
+    height: 100%;
+    max-width: calc(100vw - 224px);
     margin: 0 auto;
     position: relative;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
     color: rgba(232, 235, 240, 0.75);
-    overflow: hidden;
+    z-index: 1;
 }
 
 .reader-content {
     box-sizing: border-box;
     background: #1c1c1d;
     color: rgba(232, 235, 240, 0.75);
-    font-size: 18px;
+    font-size: 24px;
     font-family: ui-sans-serif;
     line-height: 1.8;
     letter-spacing: 0.08em;
-    /* min-height: 80vh; */
     min-width: 375px;
     word-wrap: break-word;
     overflow-wrap: break-word;
     width: 100%;
     height: 100%;
     margin: 0 auto;
+    margin-bottom: 72px;
     border-radius: 16px;
-    padding: 80px 10%;
+    padding: 80px 5%;
     /* margin-top: 72px; */
     overflow: hidden;
+    text-align: center;
+    font-family: "Source Han Serif CN VF";
 }
 
 .reader-content .page {
@@ -59,23 +87,24 @@ body {
     text-align: justify;
     white-space: pre-wrap;
     text-justify: inter-word; /* 可选，增强兼容性 */
-    overflow: hidden;
+    display: grid;
+    place-items: center;
 }
 
 .reader-header {
-    width: 85%;
+    width: 100%;
+    padding-left: 30px;
     height: 72px;
-    margin: auto;
-    padding-top: 15px;
-    font-size: 14px;
-    color: rgba(232, 235, 240, 0.55);
+    display: flex;
+    align-items: center;
+    color: rgba(232, 235, 240, 0.75);
+    font-size: 18px;
 }
-
 
 .reader-controls {
     box-sizing: border-box;
     position: absolute;
-    bottom: 10px;
+    bottom: 82px;
     left: 0;
     right: 0;
     display: flex;
@@ -86,14 +115,14 @@ body {
     color: rgba(202, 205, 210, 0.55);
 }
 
-.reader-controls .book-name, .reader-header .chapter-name {
+.reader-controls .book-name,
+.reader-header .chapter-name {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-
-button {
+.reader-controls button {
     height: 32px;
     font-size: 12px;
     font-weight: 500;
@@ -111,9 +140,112 @@ button {
     padding-right: 12px;
 }
 
+.reader-container .menu {
+    width: 100px;
+    height: 100%;
+    position: absolute;
+    right: -100px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.reader-container .menu .menu-catalogue {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: url(../img/catalogue.png) no-repeat center;
+    background-size: 48px;
+    background-color: #1c1c1d;
+    cursor: pointer;
+}
+.reader-container .menu .menu-catalogue:hover {
+    background: url(../img/catalogue_hover.png) no-repeat center;
+    background-size: 48px;
+    background-color: #1c1c1d;
+}
+
+.reader-container .modal {
+    position: absolute;
+    top: 50%;
+    bottom: 50%;
+    right: 10px;
+    width: 330px;
+    height: 70%;
+    transform: translateY(-50%);
+    border-radius: 20px;
+    background-color: #323233;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    opacity: 1;
+    transition: all 0.5s;
+    overflow-y: scroll;
+}
+
+.reader-container .notshow {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.reader-container .modal ul {
+    width: 100%;
+}
+
+.reader-container .modal .search-input {
+    width: 80%;
+    margin: 0 auto;
+    height: 40px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    padding: 0 10px;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+    transition: all 0.5s;
+    box-sizing: border-box;
+}
+
+.reader-container .modal .search-btn {
+    width: 15%;
+    height: 40px;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    background: #c4c0c0;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.5s;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.reader-container .modal ul li {
+    box-sizing: border-box;
+    width: 100%;
+    height: 50px;
+    padding: 0 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border-top: 1px solid #575758;
+    text-wrap: nowrap;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.reader-container .modal ul li:hover {
+    background-color: rgba(52, 167, 255, 0.07);
+}
+
 /* 移动端适配 */
 @media (max-width: 767px) {
-    .root-view, .reader-container, .reader-content, .reader-controls {
+    .root-view,
+    .reader-container,
+    .reader-content,
+    .reader-controls {
         background-color: #1c1c1d;
     }
     .reader-container {
@@ -123,6 +255,11 @@ button {
         position: absolute;
         left: 0;
         right: 0;
+        height: 20px;
+        margin: auto;
+        padding-top: 15px;
+        padding-left: 0;
+        font-size: 14px;
     }
 
     .reader-content {
@@ -132,16 +269,47 @@ button {
         padding: 40px 0;
         font-size: 20px;
         line-height: 1.5;
-        font-family: "Source Han Serif CN VF";
+        margin: 0 auto;
+    }
+
+    .reader-content .page {
+        width: 100%;
     }
 
     .reader-controls {
+        bottom: 10px;
     }
 
-    button {
+    .reader-controls button {
         padding: 12px 25px;
         font-size: 12px;
         display: none;
+    }
+
+    .reader-container .menu {
+        width: calc(100% + 40px);
+        height: 60px;
+        right: 0;
+        left: -20px;
+        bottom: -100px;
+        z-index: 9999;
+        background-color: #333335;
+        border-radius: 10px;
+        transition: all 0.5s;
+    }
+    .reader-container .menu .menu-catalogue {
+        background-color: rgba(0, 0, 0, 0);
+    }
+
+    .reader-container .modal {
+        top: 5%;
+        bottom: 0;
+        right: -20px;
+
+        width: 260px;
+        height: 70%;
+        transform: translateY(0%);
+        border-radius: 20px;
     }
 }
 

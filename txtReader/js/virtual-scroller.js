@@ -29,17 +29,25 @@ export class VirtualScroller {
 
   }
 
-  loadData(fullText) {
-    this.fullText = fullText;
+  async loadData(data) {
+    this.fullText = data.cleanText;
+    this.chapters = data.chapters;
     // this.pages = this.calculateEveryPageSize(fullText);
     // this.totalPages = this.pages.length;
-    this.pages = this.calculateNextPageSize(fullText);
-    this.renderCurrentPage();
+    this.pages = await this.calculateNextPageSize(this.fullText);
+    console.log('pages', this.pages)
+    await this.renderCurrentPage();
   }
 
-  renderCurrentPage() {
+  async renderCurrentPage() {
+
     // this.container.innerHTML = ''; // 清空容器
+    if (this.currentPage >= this.pages.length) {
+       await this.calculateNextPageSize(this.fullText, this.currentPage - this.pages.length + 1);
+       this.currentPage >= this.pages.length && (this.currentPage = this.pages.length - 1);
+    }
     document.querySelector('.page-info').textContent = this.currentPage + 1 + '/' + this.totalPages;
+
 
     const start = this.pages[this.currentPage][0];
     const end = this.pages[this.currentPage][1];
@@ -48,17 +56,45 @@ export class VirtualScroller {
     // pageElement.className = 'page';
     pageElement.textContent = this.fullText.slice(start, end);
 
+    //计算当前在哪一章节并修改顶端标题名
+    for (const [index, chapter] of this.chapters.entries()) {
+      if(end >= chapter.start && end <= chapter.end) {
+        document.querySelector('.chapter-name').textContent = chapter.title;
+        // EventHandler.getInstance().emit('chapterChange', index);
+        this.currentChapter = index;
+        break;
+      }
+    }
     // this.container.appendChild(pageElement);
   }
 
   goToPage(pageNumber) {
+    pageNumber = Number(pageNumber);
     if (pageNumber < 0 || pageNumber >= this.totalPages) return this.currentPage + 1 + '/' + this.totalPages;
     if (!this.pages[pageNumber] && this.pages.at(-1)[1] !== this.fullText.length) {
       this.calculateNextPageSize(this.fullText);
     }
+    //todo 使用set每次修改currentPage时自动刷新页面
     this.currentPage = pageNumber;
     this.renderCurrentPage();
     return this.currentPage + 1 + '/' + this.totalPages;
+  }
+
+  jumpToChar(charNum) {
+    if (charNum < 0 || charNum >= this.fullText.length) {
+      charNum = this.fullText.length - 1;
+    }
+    let charNumToPage = 0, i = 0,n = this.pages.length - 1;
+    while (charNum > this.pages[charNumToPage][1]) {
+      charNumToPage++;
+      if (charNumToPage >= n) {
+        this.calculateNextPageSize(this.fullText);
+        n = this.pages.length - 1;
+      }
+    }
+    console.log('charNumToPage', charNumToPage, this.pages);
+    this.goToPage(charNumToPage);
+
   }
 
   prevPage() {
@@ -139,13 +175,13 @@ export class VirtualScroller {
     return pages;
   }
 
-  calculateNextPageSize(text) {
+  calculateNextPageSize(text, nextPageCount = 5) {
     //计算后面5页页切片
-    if(this.pages.length - this.currentPage > 1) {
-      return this.pages;
-    }
+    // if(this.pages.length - this.currentPage > 1) {
+    //   return this.pages;
+    // }
     const maxCharsEveryPage = 1500;
-    const nextPageCount = 5;
+    // const nextPageCount = 5;
     let maxText = '', start = 0, end = 0;
     if (this.pages.length === 0) {
       maxText = text.slice(0, maxCharsEveryPage * nextPageCount);
