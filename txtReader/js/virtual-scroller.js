@@ -32,6 +32,7 @@ export class VirtualScroller {
   async loadData(data) {
     this.fullText = data.cleanText;
     this.chapters = data.chapters;
+    // console.log(data.cleanText.substring(data.chapters[3].start, data.chapters[3].end))
     // this.pages = this.calculateEveryPageSize(fullText);
     // this.totalPages = this.pages.length;
     this.pages = await this.calculateNextPageSize(this.fullText);
@@ -147,7 +148,7 @@ export class VirtualScroller {
       temp.textContent = text.slice(0, mid);
       const contentHeight = temp.offsetHeight;
 
-      if (contentHeight <= containerHeight - 5) {
+      if (contentHeight <= containerHeight - 20) {
         best = mid;
         low = mid + 1;
       } else {

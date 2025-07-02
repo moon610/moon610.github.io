@@ -1,6 +1,12 @@
 html,
 body {
     height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    /* background: #000; */
+    background: #fafafa;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .loading {
@@ -267,7 +273,7 @@ body {
         position: absolute;
         margin-bottom: 72px; */
         padding: 40px 0;
-        font-size: 20px;
+        font-size: 19px;
         line-height: 1.5;
         margin: 0 auto;
     }

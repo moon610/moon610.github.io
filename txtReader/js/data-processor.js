@@ -12,9 +12,33 @@ export class DataProcessor {
       // if (text.length > 100000) {
       //   return await this.worker.processLargeText(text);
       // }
+      text = this.filterAds(text);
+      let lastEnd = 0;
+      const chapters = this.splitChapters(text).map((cur, i) => {
+        const index = cur.content.indexOf('\n');
+        if(index !== -1) {
+          cur.content = cur.content.slice(0,index + 1) + '\n' + cur.content.slice(index + 1) + '\n\n\n';
+        }
+        lastEnd = cur.end + 1;
+        return {
+          title: cur.title,
+          start: cur.start + 4 * i,
+          end: cur.end + 4 * (i + 1),
+          content: cur.content
+        }
+      });
+
       return {
-        chapters: this.splitChapters(text),
-        cleanText: this.filterAds(text)
+        chapters: chapters.map(cur => {
+          return {
+            title: cur.title,
+            start: cur.start,
+            end: cur.end,
+          };
+        }),
+        cleanText: chapters.reduce((acc, cur) => {
+          return acc + cur.content;
+        }, '')
       };
     } catch (error) {
       throw new Error(`数据处理失败: ${error.message}`);
@@ -36,7 +60,7 @@ export class DataProcessor {
           title: '前言',
           start: 0,
           end: match.index,
-          // content: text.substring(0, match.index)
+          content: text.substring(0, match.index)
         });
         this.chapterRegex.lastIndex = 0;
       } else if (chapters.length === 0 && match.index === 0) {
@@ -45,7 +69,7 @@ export class DataProcessor {
           title: this.getTitle(text, start),
           start: start,
           end: match.index + match[0].length,
-          // content: text.substring(start, match.index)
+          content: text.substring(start, match.index)
         });
       } else {
         const lastChapter = chapters.at(-1);
@@ -57,17 +81,17 @@ export class DataProcessor {
           title: this.getTitle(text, match.index),
           start,
           end: match.index + match[0].length,
-          // content: text.substring(start, match.index + match[0].length)
+          content: text.substring(start, match.index + match[0].length)
         });
       }
       lastIndex = match.index;
       match = this.chapterRegex.exec(text);
     }
     // 添加最后一章
-    if(match === null) {
+    if (match === null) {
       const lastChapter = chapters.at(-1);
-        lastChapter.end = text.length;
-        lastChapter.content = text.substring(lastChapter.start, text.length);
+      lastChapter.end = text.length;
+      lastChapter.content = text.substring(lastChapter.start, text.length);
     }
     console.log(chapters)
 
@@ -75,8 +99,16 @@ export class DataProcessor {
   }
 
   filterAds(text) {
-    return this.adPatterns.reduce((str, pattern) =>
-      str.replace(pattern, ''), text);
+
+    const paragraphs = text.split(/\n\s*\n/);
+
+    // 5. 首行缩进 + 清洗每段前后空格
+    return paragraphs
+      .filter(p => p.trim().length > 0)
+      .map(p => `　　${p.trim()}`).join('\n');
+
+    // return this.adPatterns.reduce((str, pattern) =>
+    //   str.replace(pattern, ''), text);
   }
 
   on(event, callback) {
