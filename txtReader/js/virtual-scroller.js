@@ -122,7 +122,7 @@ export class VirtualScroller {
 
     // 设置样式以匹配 .page 的显示效果
     temp.style.position = 'absolute';
-    temp.style.width = `${containerWidth * 0.85}px`;
+    temp.style.width = `${containerWidth}px`;
     // temp.style.height = `${containerHeight}px`;
     // temp.style.overflow = 'hidden';
     temp.style.visibility = 'hidden';
