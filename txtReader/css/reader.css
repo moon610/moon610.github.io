@@ -6,7 +6,7 @@ body {
     padding: 0;
     /* background: #000; */
     background: #fafafa;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: sans-serif;
 }
 
 .loading {
@@ -67,7 +67,6 @@ body {
     background: #1c1c1d;
     color: rgba(232, 235, 240, 0.75);
     font-size: 24px;
-    font-family: ui-sans-serif;
     line-height: 1.8;
     letter-spacing: 0.08em;
     min-width: 300px;
@@ -82,7 +81,10 @@ body {
     /* margin-top: 72px; */
     overflow: hidden;
     text-align: center;
-    font-family: "Source Han Serif CN VF";
+    font-family: ui-sans-serif;
+    /* font-family: "Source Han Serif CN VF"; */
+    /* font-family: "Source Han Serif CN Medium"; */
+    font-family: "Source Han Serif CN";
 }
 
 .reader-content .page {
