@@ -67,7 +67,6 @@ export class ViewManager {
     // this.menuCatalogueBtn.addEventListener('click', this.menuCatalogueBtnClick);
     this.menuCatalogueBtn.addEventListener('touchstart', this.menuCatalogueBtnClick);
     // this.reSplitChapterBtn.addEventListener('click', () => this.on('reSplitChapter', null));
-    // this.modalFormBtn.addEventListener('click', () => this.submitForm());
     EventHandler.getInstance().registerClick(this.modalFormBtn, () => this.submitForm());
   }
 
@@ -77,12 +76,6 @@ export class ViewManager {
 
   setUpUI(options) {
     const menuList = document.querySelector('.menu-list');
-    // menuList.addEventListener('click', (e) => {
-    //   if (e.target.classList.contains('menu-lsititem')) {
-    //     const index = e.target.dataset.index;
-    //     this.virtualScroller.jumpToChar(index);
-    //   }
-    // });
     // menuList.addEventListener('touchend', (e) => {
     //   if (e.target.classList.contains('menu-lsititem')) {
     //     const index = e.target.dataset.index;
@@ -90,7 +83,7 @@ export class ViewManager {
     //   }
     // });
     EventHandler.getInstance().registerClick(menuList, (e) => {
-      if (e.target.classList.contains('menu-lsititem')) {
+      if (e.target.classList.contains('menu-listitem')) {
         const index = e.target.dataset.index;
         this.virtualScroller.jumpToChar(index);
       }
@@ -141,14 +134,12 @@ export class ViewManager {
 
   prevPage() {
     const pageInfo = this.virtualScroller.prevPage();
-    document.querySelector('.page-info').textContent = pageInfo;
-    this.updateProgress();
+    // this.updateProgress();
   }
 
   nextPage() {
     const pageInfo = this.virtualScroller.nextPage();
-    document.querySelector('.page-info').textContent = pageInfo;
-    this.updateProgress();
+    // this.updateProgress();
   }
 
   showMenu() {
@@ -176,7 +167,7 @@ export class ViewManager {
   }
 
   updateProgress() {
-    const progress = this.virtualScroller.getProgress();
+    // const progress = this.virtualScroller.getProgress();
     // this.container.querySelector('.progress-bar').style.width = `${progress}%`;
   }
 
@@ -198,7 +189,7 @@ export class ViewManager {
       const li = document.createElement('li');
       li.textContent = chapter.title;
       li.dataset.index = chapter.start;
-      li.classList.add('menu-lsititem');
+      li.classList.add('menu-listitem');
       menuList.appendChild(li);
 
     });
@@ -209,7 +200,7 @@ export class ViewManager {
     const input = document.querySelector('.search-input');
     const value = Number(input.value) - 1;
     this.virtualScroller.goToPage(value < 0 ? 0 : value);
-    // console.log(input.value);
+    console.log(value);
     input.value = '';
     this.modal.classList.add('notshow');
 

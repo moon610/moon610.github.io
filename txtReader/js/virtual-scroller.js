@@ -23,6 +23,7 @@ export class VirtualScroller {
     // 防抖相关
     this.resizeDebounceTimer = null;
     this.debounceDelay = 2000; // 2秒防抖延迟
+
   }
 
   _init() {
@@ -30,6 +31,7 @@ export class VirtualScroller {
   }
 
   async loadData(data) {
+    this.bookName = document.querySelector('.book-name').textContent;
     this.fullText = data.cleanText;
     this.chapters = data.chapters;
     // console.log(data.cleanText.substring(data.chapters[3].start, data.chapters[3].end))
@@ -37,6 +39,7 @@ export class VirtualScroller {
     // this.totalPages = this.pages.length;
     this.pages = await this.calculateNextPageSize(this.fullText);
     console.log('pages', this.pages)
+    this.getProgress(this.bookName);
     await this.renderCurrentPage();
   }
 
@@ -66,6 +69,7 @@ export class VirtualScroller {
         break;
       }
     }
+    this.saveProgress(this.bookName, start);
     // this.container.appendChild(pageElement);
   }
 
@@ -78,10 +82,17 @@ export class VirtualScroller {
     //todo 使用set每次修改currentPage时自动刷新页面
     this.currentPage = pageNumber;
     this.renderCurrentPage();
-    return this.currentPage + 1 + '/' + this.totalPages;
+    return this.currentPage;
   }
 
   jumpToChar(charNum) {
+    const charNumToPage = this.charToPage(charNum);
+    console.log('charNumToPage', charNumToPage, this.pages);
+    this.goToPage(charNumToPage);
+
+  }
+
+  charToPage(charNum) {
     if (charNum < 0 || charNum >= this.fullText.length) {
       charNum = this.fullText.length - 1;
     }
@@ -93,9 +104,7 @@ export class VirtualScroller {
         n = this.pages.length - 1;
       }
     }
-    console.log('charNumToPage', charNumToPage, this.pages);
-    this.goToPage(charNumToPage);
-
+    return charNumToPage;
   }
 
   prevPage() {
@@ -106,8 +115,20 @@ export class VirtualScroller {
     return this.goToPage(this.currentPage + 1);
   }
 
-  getProgress() {
+  getProgress(bookName) {
     //获取阅读进度
+    const progressCharNum = JSON.parse(localStorage.getItem('read-progress'))?.[bookName] || 1;
+    console.log('进度', progressCharNum,localStorage.getItem('read-progress'));
+    this.currentPage = this.charToPage(progressCharNum);
+    return this.currentPage;
+  }
+
+  saveProgress(bookName, index = 1) {
+    //通过localstorage保存阅读进度
+    const progress = JSON.parse(localStorage.getItem('read-progress')) || {};
+    progress[bookName] = index
+    localStorage.setItem('read-progress', JSON.stringify(progress));
+
   }
 
   calculateMaxCharsInContainer(text) {

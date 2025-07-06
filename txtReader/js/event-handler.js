@@ -173,13 +173,20 @@ export class EventHandler {
      * 禁用浏览器默认行为（如页面滚动、拖拽）
      */
     cancelDefaultEvents() {
-        const html = document.querySelector('body');
-        [ 'touchstart','touchend','click', 'submit'].forEach((event) => {
+        const allowedSelectors = ['.menu-listitem', '.search-input'];
+        let allowedElements = [];
+        ['touchstart', 'touchend', 'click', 'submit'].forEach(event => {
             document.addEventListener(event, (e) => {
-                if(!e.target.classList.contains('menu-lsititem')) {
+
+                allowedElements.length === 0 && (allowedElements = allowedSelectors.flatMap(selector =>
+                    Array.from(document.querySelectorAll(selector))
+                ));
+
+                const isAllowedElement = (target) =>
+                    allowedElements.some(el => el === target || el.contains(target));
+                if (!isAllowedElement(e.target)) {
                     e.preventDefault();
                 }
-
             }, { passive: false });
         });
     }
