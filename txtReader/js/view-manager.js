@@ -43,7 +43,8 @@ export class ViewManager {
             <section  class="modal-container">
               <ul class="menu-list">
                <form class="search-form">
-                <input type="number" class="search-input">
+               <input type="checkbox" class="search-checkbox" id="checkbox"/>
+                <input type="number" class="search-input" placeholder="输入页码">
                 <input type="submit"  value = "跳转" class="search-btn">
                 </form>
               </ul>
@@ -60,14 +61,17 @@ export class ViewManager {
     // this.reSplitChapterBtn = this.container.querySelector('.re-split-chapter-btn');
     this.modal = document.querySelector('.modal');
     this.modalFormBtn = this.container.querySelector('.search-btn');
+    this.modalFormInput = this.container.querySelector('.search-input');
+    this.modalFormCheckbox = this.container.querySelector('.search-checkbox');
 
     // 绑定事件
     this.prevBtn.addEventListener('click', () => this.prevPage());
     this.nextBtn.addEventListener('click', () => this.nextPage());
     // this.menuCatalogueBtn.addEventListener('click', this.menuCatalogueBtnClick);
-    this.menuCatalogueBtn.addEventListener('touchstart', this.menuCatalogueBtnClick);
+    // this.menuCatalogueBtn.addEventListener('touchstart', this.menuCatalogueBtnClick);
     // this.reSplitChapterBtn.addEventListener('click', () => this.on('reSplitChapter', null));
     EventHandler.getInstance().registerClick(this.modalFormBtn, () => this.submitForm());
+    this.modalFormCheckbox.addEventListener('change', (e) => this.checkboxChange(e.target));
   }
 
   setBookName(name) {
@@ -197,17 +201,34 @@ export class ViewManager {
   }
 
   submitForm(event) {
-    const input = document.querySelector('.search-input');
-    const value = Number(input.value) - 1;
-    this.virtualScroller.goToPage(value < 0 ? 0 : value);
-    console.log(value);
-    input.value = '';
-    this.modal.classList.add('notshow');
+    if(!this.modalFormCheckbox.checked) {
+      const input = document.querySelector('.search-input');
+      const value = Number(input.value) - 1;
+      this.virtualScroller.goToPage(value < 0 ? 0 : value);
+      console.log(value);
+      input.value = '';
+      this.modal.classList.add('notshow');
+    } else {
+      const input = `/${this.modalFormInput.value}/g`;
+      const reg = new RegExp(this.modalFormInput.value);
+      console.log(reg.exec('1234\n第一章 123\n第二章 456'));
+      // const result = EventHandler.getInstance().emit('reprocess-chapters', this.virtualScroller.fullText, { chapterRegex: reg })
+      // console.log(result);
+    }
 
   }
 
-
-  on(event, callback) {
-
+  checkboxChange(e) {
+    if (e.checked) {
+        this.modalFormInput.value = '';
+        this.modalFormInput.type = 'text';
+        this.modalFormInput.placeholder = '输入正则';
+      } else {
+        this.modalFormInput.value = '';
+        this.modalFormInput.type = 'number';
+        this.modalFormInput.placeholder = '输入页码';
+      }
   }
+
+
 }

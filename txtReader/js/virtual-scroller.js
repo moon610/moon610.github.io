@@ -184,19 +184,6 @@ export class VirtualScroller {
     return best;
   }
 
-  calculateEveryPageSize(content) {
-    //计算每页切片
-    const pages = [];
-    let start = 0, end = 0;
-    while (content.length > 0) {
-      end = this.calculateMaxCharsInContainer(content);
-      content = content.slice(end);
-      pages.push([start, start += end])
-    }
-    console.log(pages);
-    return pages;
-  }
-
   calculateNextPageSize(text, nextPageCount = 5) {
     //计算后面5页页切片
     // if(this.pages.length - this.currentPage > 1) {
@@ -236,10 +223,12 @@ export class VirtualScroller {
         this.lastHeight = containerRect.height;
 
         if (this.fullText && this.fullText !== '无内容') {
-          requestAnimationFrame(() => {
-            this.pages = this.calculateEveryPageSize(this.fullText);
-            this.totalPages = this.pages.length;
-            this.renderCurrentPage();
+          const currentChapter = this.pages[this.currentPage][0] + 1;
+          requestAnimationFrame(async () => {
+            this.pages = []
+            this.pages = await this.calculateNextPageSize(this.fullText);
+            this.jumpToChar(currentChapter);
+            console.log('resize calc');
           });
         }
       }, this.debounceDelay); // 2秒后执行

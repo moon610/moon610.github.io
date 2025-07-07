@@ -7,17 +7,17 @@ export class DataProcessor {
     // this.worker = new DataWorker();
   }
 
-  async process(text) {
+  async process(text, options = { chapterRegex: this.chapterRegex }) {
     try {
       // if (text.length > 100000) {
       //   return await this.worker.processLargeText(text);
       // }
       text = this.filterAds(text);
       let lastEnd = 0;
-      const chapters = this.splitChapters(text).map((cur, i) => {
+      const chapters = this.splitChapters(text, options.chapterRegex).map((cur, i) => {
         const index = cur.content.indexOf('\n');
-        if(index !== -1) {
-          cur.content = cur.content.slice(0,index + 1) + '\n' + cur.content.slice(index + 1) + '\n\n\n';
+        if (index !== -1) {
+          cur.content = cur.content.slice(0, index + 1) + '\n' + cur.content.slice(index + 1) + '\n\n\n';
         }
         lastEnd = cur.end + 1;
         return {
@@ -45,13 +45,13 @@ export class DataProcessor {
     }
   }
 
-  splitChapters(text) {
+  splitChapters(text, chapterRegex) {
     const chapters = [];
     let lastIndex = 0;
-    let match = this.chapterRegex.exec(text);
+    let match = chapterRegex.exec(text);
 
     if (match === null) {
-      return [{ title: '未匹配到章节', start: 0, end: text.length }];
+      return [{ title: '未匹配到章节', start: 0, end: text.length, content: '未匹配到章节\n\n' }];
     }
 
     while (match !== null) {
@@ -62,7 +62,7 @@ export class DataProcessor {
           end: match.index,
           content: text.substring(0, match.index)
         });
-        this.chapterRegex.lastIndex = 0;
+        chapterRegex.lastIndex = 0;
       } else if (chapters.length === 0 && match.index === 0) {
         const start = 0;
         chapters.push({
@@ -85,7 +85,7 @@ export class DataProcessor {
         });
       }
       lastIndex = match.index;
-      match = this.chapterRegex.exec(text);
+      match = chapterRegex.exec(text);
     }
     // 添加最后一章
     if (match === null) {

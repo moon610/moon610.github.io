@@ -83,7 +83,6 @@ export class EventHandler {
         })
 
         triggerContainer.addEventListener('click', (e) => {
-            e.preventDefault();
             if (this.isMobile) {
                 return;
             }
@@ -173,7 +172,7 @@ export class EventHandler {
      * 禁用浏览器默认行为（如页面滚动、拖拽）
      */
     cancelDefaultEvents() {
-        const allowedSelectors = ['.menu-listitem', '.search-input'];
+        const allowedSelectors = ['.menu-listitem', '.search-input', '#checkbox'];
         let allowedElements = [];
         ['touchstart', 'touchend', 'click', 'submit'].forEach(event => {
             document.addEventListener(event, (e) => {

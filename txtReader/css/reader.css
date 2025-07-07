@@ -203,10 +203,27 @@ body {
     width: 100%;
 }
 
-.reader-container .modal .search-input {
-    width: 80%;
+.reader-container .modal .search-form {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items:center;
+    justify-content: center;
     margin: 0 auto;
-    height: 40px;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.reader-container .modal .search-checkbox {
+    width: 40px;
+    height: 30px;
+}
+
+.reader-container .modal .search-input {
+    width: 65%;
+    margin: 0 auto;
+    height: 35px;
+    margin: 0 5px;
     border-radius: 20px;
     border: 1px solid #ccc;
     padding: 0 10px;
@@ -216,10 +233,13 @@ body {
     transition: all 0.5s;
     box-sizing: border-box;
 }
+.reader-container .modal .search-input::placeholder {
+    color: #999;
+}
 
 .reader-container .modal .search-btn {
-    width: 15%;
-    height: 40px;
+    width: 40px;
+    height: 30px;
     border-radius: 15px;
     border: 1px solid #ccc;
     background: #c4c0c0;

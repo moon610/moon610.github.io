@@ -58,10 +58,10 @@ class NovelReader {
     //   this.viewManager.applyStyles(config);
     // });
     // 新增监听：重新划分章节
-    this.viewManager.on('reprocess-chapters', async () => {
-      const content = await this.utils.fetchContentAgain(); // 假设你有方法重新获取内容
-      const processedData = await this.dataProcessor.process(content);
-      this.viewManager.render(processedData);
+    this.eventHandler.on('reprocess-chapters', async (text, options) => {
+      console.log(options)
+      const processedData = await this.dataProcessor.process(text, options);
+      return processedData.chapters;
     });
   }
 
