@@ -123,10 +123,10 @@ export class VirtualScroller {
     return this.currentPage;
   }
 
-  saveProgress(bookName, index = 1) {
+  saveProgress(bookName, index = 0) {
     //通过localstorage保存阅读进度
     const progress = JSON.parse(localStorage.getItem('read-progress')) || {};
-    progress[bookName] = index
+    progress[bookName] = index + 1
     localStorage.setItem('read-progress', JSON.stringify(progress));
 
   }
