@@ -66,7 +66,7 @@ body {
     box-sizing: border-box;
     background: #1c1c1d;
     color: rgba(232, 235, 240, 0.75);
-    font-size: 24px;
+    font-size: 22px;
     line-height: 1.8;
     letter-spacing: 0.08em;
     min-width: 300px;
@@ -77,7 +77,8 @@ body {
     margin: 0 auto;
     margin-bottom: 72px;
     border-radius: 16px;
-    padding: 80px 5%;
+    padding: 10px 2%;
+    padding-bottom: 40px;
     /* margin-top: 72px; */
     overflow: hidden;
     text-align: center;
@@ -88,9 +89,9 @@ body {
 }
 
 .reader-content .page {
-    overflow: hidden;
+    /* overflow: hidden; */
     height: 100%;
-    width: 85%;
+    width: calc(100% - 20px);
     margin: auto;
     text-align: justify;
     white-space: pre-wrap;
@@ -278,6 +279,8 @@ body {
     }
     .reader-container {
         height: 100%;
+        width: 100%;
+        max-width: calc(100vw - 3em);
     }
     .reader-header {
         position: absolute;

@@ -87,16 +87,19 @@ export class VirtualScroller {
 
   jumpToChar(charNum) {
     const charNumToPage = this.charToPage(charNum);
-    console.log('charNumToPage', charNumToPage, this.pages);
+    // console.log('charNumToPage', charNumToPage, this.pages);
     this.goToPage(charNumToPage);
 
   }
 
   charToPage(charNum) {
-    if (charNum < 0 || charNum >= this.fullText.length) {
+    if(charNum <= 0) {
+      charNum = 1;
+    }
+    if (charNum >= this.fullText.length) {
       charNum = this.fullText.length - 1;
     }
-    let charNumToPage = 0, i = 0,n = this.pages.length - 1;
+    let charNumToPage = 0,n = this.pages.length - 1;
     while (charNum > this.pages[charNumToPage][1]) {
       charNumToPage++;
       if (charNumToPage >= n) {
@@ -133,9 +136,10 @@ export class VirtualScroller {
 
   calculateMaxCharsInContainer(text) {
     //🔒 安全判断 1: 容器高度为 0，避免死循环
-    const style = window.getComputedStyle(this.container);
-    const containerHeight = this.container.offsetHeight - style.paddingTop.replace('px', '') - style.paddingBottom.replace('px', '');
-    const containerWidth = this.container.offsetWidth - style.paddingLeft.slice(0, -2) - style.paddingRight.slice(0, -2);
+    const container = document.querySelector('.page');
+    const style = window.getComputedStyle(container);
+    const containerHeight = container.offsetHeight - style.paddingTop.replace('px', '') - style.paddingBottom.replace('px', '');
+    const containerWidth = container.offsetWidth - style.paddingLeft.slice(0, -2) - style.paddingRight.slice(0, -2);
     if (containerHeight <= 0) {
       console.warn('容器高度为 0，跳过字符数计算');
       return 0;

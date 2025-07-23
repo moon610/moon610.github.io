@@ -33,7 +33,7 @@ class NovelReader {
   async load(content) {
     try {
       // this.chunkedString._init(content);
-      const processedData = await this.dataProcessor.process(content);
+      const processedData = this.dataProcessor.process(content);
       this.viewManager.render(processedData);
       // this.viewManager.updateProgress();
     } catch (error) {
@@ -58,10 +58,10 @@ class NovelReader {
     //   this.viewManager.applyStyles(config);
     // });
     // 新增监听：重新划分章节
-    this.eventHandler.on('reprocess-chapters', async (text, options) => {
+    this.eventHandler.on('reprocess-chapters', (text, options) => {
       console.log(options)
-      const processedData = await this.dataProcessor.process(text, options);
-      return processedData.chapters;
+      const chapters = this.dataProcessor.splitChapters(text, options?.chapterRegex);
+      return chapters;
     });
   }
 
@@ -95,7 +95,7 @@ class NovelReader {
 
 const reader = new NovelReader({
   container: '#app',
-  chapterRegex: /第[一二三四五六七八九十百千零]+章/g,
+  chapterRegex: /[第(（][一二三四五六七八九十百千零1234567890]+[章节）)]/g,
 });
 
 

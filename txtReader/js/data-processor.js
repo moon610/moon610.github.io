@@ -7,28 +7,30 @@ export class DataProcessor {
     // this.worker = new DataWorker();
   }
 
-  async process(text, options = { chapterRegex: this.chapterRegex }) {
+ process(text, options = { chapterRegex: this.chapterRegex }) {
     try {
       // if (text.length > 100000) {
       //   return await this.worker.processLargeText(text);
       // }
       text = this.filterAds(text);
       let lastEnd = 0;
-      const chapters = this.splitChapters(text, options.chapterRegex).map((cur, i) => {
+      const chapters = this.splitChapters(text, options.chapterRegex)
+      .map((cur, i) => {
         const index = cur.content.indexOf('\n');
         if (index !== -1) {
-          cur.content = cur.content.slice(0, index + 1) + '\n' + cur.content.slice(index + 1) + '\n\n\n';
+          cur.content = cur.content.slice(0, index) + '\n' + cur.content.slice(index) + '\n\n\n';
         }
-        lastEnd = cur.end + 1;
-        return {
+        const resullt =  {
           title: cur.title,
-          start: cur.start + 4 * i,
-          end: cur.end + 4 * (i + 1),
+          start: lastEnd,
+          end: lastEnd + cur.content.length,
           content: cur.content
         }
+        lastEnd = resullt.end;
+        return resullt;
       });
 
-      return {
+      const result= {
         chapters: chapters.map(cur => {
           return {
             title: cur.title,
@@ -40,18 +42,20 @@ export class DataProcessor {
           return acc + cur.content;
         }, '')
       };
+      console.log('result', chapters)
+      return result;
     } catch (error) {
       throw new Error(`数据处理失败: ${error.message}`);
     }
   }
 
-  splitChapters(text, chapterRegex) {
+  splitChapters(text, chapterRegex = this.chapterRegex) {
     const chapters = [];
     let lastIndex = 0;
     let match = chapterRegex.exec(text);
 
     if (match === null) {
-      return [{ title: '未匹配到章节', start: 0, end: text.length, content: '未匹配到章节\n\n' }];
+      return [{ title: '未匹配到章节', start: 0, end: text.length, content: text }];
     }
 
     while (match !== null) {
@@ -84,7 +88,9 @@ export class DataProcessor {
           content: text.substring(start, match.index + match[0].length)
         });
       }
+      // console.log(chapterRegex.lastIndex)
       lastIndex = match.index;
+      // chapterRegex.lastIndex = match.index + match[0].length;
       match = chapterRegex.exec(text);
     }
     // 添加最后一章
@@ -93,7 +99,7 @@ export class DataProcessor {
       lastChapter.end = text.length;
       lastChapter.content = text.substring(lastChapter.start, text.length);
     }
-    console.log(chapters)
+    // console.log(chapters)
 
     return chapters;
   }

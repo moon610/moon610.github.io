@@ -163,9 +163,13 @@ export class EventHandler {
      * @param  {...any} args
      */
     emit(eventName, ...args) {
+        const result = {};
         if (this.handlers.has(eventName)) {
-            this.handlers.get(eventName).forEach((handler) => handler(...args));
+            this.handlers.get(eventName).forEach((handler) => {
+                result[eventName] = (handler(...args))
+            });
         }
+        return result;
     }
 
     /**

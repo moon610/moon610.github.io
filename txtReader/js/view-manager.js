@@ -41,12 +41,13 @@ export class ViewManager {
           </div>
           <div class="modal notshow">
             <section  class="modal-container">
-              <ul class="menu-list">
-               <form class="search-form">
-               <input type="checkbox" class="search-checkbox" id="checkbox"/>
+              <form class="search-form">
+                <input type="checkbox" class="search-checkbox" id="checkbox"/>
                 <input type="number" class="search-input" placeholder="输入页码">
-                <input type="submit"  value = "跳转" class="search-btn">
+                <input type="submit"  value = "GO" class="search-btn">
                 </form>
+              <ul class="menu-list">
+
               </ul>
             </section>
           </div>
@@ -189,6 +190,7 @@ export class ViewManager {
 
   updateMenuList(chapters) {
     const menuList = document.querySelector('.menu-list');
+    menuList.innerHTML = '';
     chapters.forEach(chapter => {
       const li = document.createElement('li');
       li.textContent = chapter.title;
@@ -201,7 +203,7 @@ export class ViewManager {
   }
 
   submitForm(event) {
-    if(!this.modalFormCheckbox.checked) {
+    if (!this.modalFormCheckbox.checked) {
       const input = document.querySelector('.search-input');
       const value = Number(input.value) - 1;
       this.virtualScroller.goToPage(value < 0 ? 0 : value);
@@ -209,25 +211,29 @@ export class ViewManager {
       input.value = '';
       this.modal.classList.add('notshow');
     } else {
-      const input = `/${this.modalFormInput.value}/g`;
-      const reg = new RegExp(this.modalFormInput.value);
-      console.log(reg.exec('1234\n第一章 123\n第二章 456'));
-      // const result = EventHandler.getInstance().emit('reprocess-chapters', this.virtualScroller.fullText, { chapterRegex: reg })
-      // console.log(result);
+      let result = {}
+      if (!this.modalFormInput.value) {
+        result = EventHandler.getInstance().emit('reprocess-chapters', this.virtualScroller.fullText)
+      } else {
+        const reg = new RegExp(this.modalFormInput.value, 'g');
+        result = EventHandler.getInstance().emit('reprocess-chapters', this.virtualScroller.fullText, { chapterRegex: reg })
+      }
+      console.log(result['reprocess-chapters'])
+      this.updateMenuList(result['reprocess-chapters'])
     }
 
   }
 
   checkboxChange(e) {
     if (e.checked) {
-        this.modalFormInput.value = '';
-        this.modalFormInput.type = 'text';
-        this.modalFormInput.placeholder = '输入正则';
-      } else {
-        this.modalFormInput.value = '';
-        this.modalFormInput.type = 'number';
-        this.modalFormInput.placeholder = '输入页码';
-      }
+      this.modalFormInput.value = '';
+      this.modalFormInput.type = 'text';
+      this.modalFormInput.placeholder = '输入正则';
+    } else {
+      this.modalFormInput.value = '';
+      this.modalFormInput.type = 'number';
+      this.modalFormInput.placeholder = '输入页码';
+    }
   }
 
 
