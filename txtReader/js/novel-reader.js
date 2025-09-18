@@ -95,7 +95,7 @@ class NovelReader {
 
 const reader = new NovelReader({
   container: '#app',
-  chapterRegex: /[第(（][一二三四五六七八九十百千零1234567890]+[章节册卷部）)]/g,
+  chapterRegex: /[第(（][一二三四五六七八九十百千零1234567890.-前言序章]+[章节册卷部）)]/g,
 });
 
 
