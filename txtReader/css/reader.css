@@ -98,6 +98,9 @@ body {
     text-justify: inter-word; /* 可选，增强兼容性 */
     display: grid;
     place-items: center;
+    word-break: break-all;
+    word-wrap: break-word;
+    letter-spacing: 0.05em;
 }
 
 .reader-header {
