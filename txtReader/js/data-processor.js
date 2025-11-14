@@ -70,7 +70,8 @@ export class DataProcessor {
       } else if (chapters.length === 0 && match.index === 0) {
         const start = 0;
         chapters.push({
-          title: this.getTitle(text, start),
+          // title: this.getTitle(text, match.index),
+          title: match[1] || match[2] || this.getTitle(text, match.index), //第一个捕获组或第二个捕获组或手动获取
           start: start,
           end: match.index + match[0].length,
           content: text.substring(start, match.index)
@@ -82,7 +83,8 @@ export class DataProcessor {
 
         const start = match.index;
         chapters.push({
-          title: this.getTitle(text, match.index),
+          // title: this.getTitle(text, match.index),
+          title: match[1] || match[2] || this.getTitle(text, match.index),
           start,
           end: match.index + match[0].length,
           content: text.substring(start, match.index + match[0].length)
