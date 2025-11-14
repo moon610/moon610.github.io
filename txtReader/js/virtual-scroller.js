@@ -47,8 +47,8 @@ export class VirtualScroller {
 
     // this.container.innerHTML = ''; // 清空容器
     if (this.currentPage >= this.pages.length) {
-       await this.calculateNextPageSize(this.fullText, this.currentPage - this.pages.length + 1);
-       this.currentPage >= this.pages.length && (this.currentPage = this.pages.length - 1);
+      await this.calculateNextPageSize(this.fullText, this.currentPage - this.pages.length + 1);
+      this.currentPage >= this.pages.length && (this.currentPage = this.pages.length - 1);
     }
     document.querySelector('.page-info').textContent = this.currentPage + 1 + '/' + this.totalPages;
 
@@ -58,11 +58,18 @@ export class VirtualScroller {
 
     const pageElement = document.querySelector('.reader-content .page');
     // pageElement.className = 'page';
-    pageElement.textContent = this.fullText.slice(start, end);
+    // pageElement.textContent = this.fullText.slice(start, end);
+    pageElement.innerHTML = '';
+    const textContent = this.fullText.slice(start, end).split('\n');
+    textContent.forEach((line, index) => {
+      const lineElement = document.createElement('p');
+      lineElement.textContent = line;
+      pageElement.appendChild(lineElement);
+    });
 
     //计算当前在哪一章节并修改顶端标题名
     for (const [index, chapter] of this.chapters.entries()) {
-      if(end >= chapter.start && end <= chapter.end) {
+      if (end >= chapter.start && end <= chapter.end) {
         document.querySelector('.chapter-name').textContent = chapter.title;
         // EventHandler.getInstance().emit('chapterChange', index);
         this.currentChapter = index;
@@ -93,13 +100,13 @@ export class VirtualScroller {
   }
 
   charToPage(charNum) {
-    if(charNum <= 0) {
+    if (charNum <= 0) {
       charNum = 1;
     }
     if (charNum >= this.fullText.length) {
       charNum = this.fullText.length - 1;
     }
-    let charNumToPage = 0,n = this.pages.length - 1;
+    let charNumToPage = 0, n = this.pages.length - 1;
     while (charNum > this.pages[charNumToPage][1]) {
       charNumToPage++;
       if (charNumToPage >= n) {
@@ -121,7 +128,7 @@ export class VirtualScroller {
   getProgress(bookName) {
     //获取阅读进度
     const progressCharNum = JSON.parse(localStorage.getItem('read-progress'))?.[bookName] || 1;
-    console.log('进度', progressCharNum,localStorage.getItem('read-progress'));
+    console.log('进度', progressCharNum, localStorage.getItem('read-progress'));
     this.currentPage = this.charToPage(progressCharNum);
     return this.currentPage;
   }
@@ -152,7 +159,8 @@ export class VirtualScroller {
     // temp.style.height = `${containerHeight}px`;
     // temp.style.overflow = 'hidden';
     temp.style.visibility = 'hidden';
-    temp.style.whiteSpace = 'pre-wrap';
+    // temp.style.whiteSpace = 'pre-wrap';
+    temp.style.textIndent = style.textIndent;
     temp.style.wordBreak = 'break-all';
     temp.style.fontFamily = style.fontFamily;
     temp.style.letterSpacing = style.letterSpacing;
@@ -170,10 +178,17 @@ export class VirtualScroller {
 
     while (low <= high) {
       const mid = Math.floor((low + high) / 2);
-      temp.textContent = text.slice(0, mid);
+      // temp.textContent = text.slice(0, mid);
+      temp.innerHTML = '';
+      const textContent = text.slice(0, mid).split('\n');
+      textContent.forEach((line, index) => {
+        const lineElement = document.createElement('p');
+        lineElement.textContent = line;
+        temp.appendChild(lineElement);
+      });
       const contentHeight = temp.offsetHeight;
 
-      if (contentHeight <= containerHeight - 20) {
+      if (contentHeight <= containerHeight - 10) {
         best = mid;
         low = mid + 1;
       } else {

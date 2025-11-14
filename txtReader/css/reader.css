@@ -94,13 +94,18 @@ body {
     width: calc(100% - 20px);
     margin: auto;
     text-align: justify;
-    white-space: pre-wrap;
+    /* white-space: pre-wrap; */
     text-justify: inter-word; /* 可选，增强兼容性 */
     display: grid;
-    place-items: center;
+    place-items: center start;
     word-break: break-all;
     word-wrap: break-word;
     letter-spacing: 0.05em;
+    text-indent: 2em;
+}
+
+.page p:first-of-type {
+    text-indent: 0;
 }
 
 .reader-header {

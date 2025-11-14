@@ -95,7 +95,7 @@ class NovelReader {
 
 const reader = new NovelReader({
   container: '#app',
-  chapterRegex: /\s[第(（][一二三四五六七八九十百千零1234567890.-前言序章]+[章节册卷部）)]/g,
+  chapterRegex: /\s[第(（#][一二三四五六七八九十百千零1234567890.-前言序章]+[章节册卷部页）)#]/g,
 });
 
 
@@ -122,6 +122,7 @@ else {
 
     // 读取文件内容为文本
     reader.utils.getChar(response).then(data => {
+      data = data.replaceAll(/(\r?\n)+/g,'\n').replaceAll(/\n +/g,'\n');
       reader.load(data)
     })
   }).catch(error => {

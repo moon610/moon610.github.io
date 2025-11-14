@@ -122,7 +122,11 @@ export class DataProcessor {
   }
 
   getTitle(text, startIndex) {
-    const endIndex = text.indexOf('\n', startIndex);
+    //判断标记位置是否是换行符
+    if (text[startIndex] === '\n') {
+      startIndex += 1;
+    }
+    const endIndex = text.indexOf('\n', startIndex); //从标记位置到换行中间的内容都作为标题
     text.indexOf('/n', startIndex);
     if (endIndex === -1) {
       return text.substring(startIndex);
