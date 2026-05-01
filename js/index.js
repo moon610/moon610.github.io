@@ -10,7 +10,7 @@ async function viewUrl(searchWord) {
 	// 	}
 	// }
 	// var url = "https://www.bing.com/search?q=" + searchWord;
-	const url = "https://search.yuege.space/search?q=" + searchWord
+	const url = "https://scf.yuege.site/searchProxy/search?q=" + searchWord
 	window.location.href = url;
 	//window.open(url);
 }
