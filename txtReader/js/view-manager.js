@@ -4,7 +4,6 @@ import { EventHandler } from './event-handler.js';
 export class ViewManager {
   constructor(options) {
     this.container = document.querySelector(options.container);
-    this.isMobile = false;
     this.currentChapter = 0;
     this.pageSize = 3000; // 默认每页字符数
     this.initUI();
@@ -94,18 +93,17 @@ export class ViewManager {
       }
     });
     const modal = document.querySelector('.modal');
-    window.addEventListener('click', (e) => {
 
-      if (e.target.classList.contains('menu-catalogue')) {
-        if (modal.classList.contains('notshow')) {
-          modal.classList.remove('notshow');
-        } else {
-          modal.classList.add('notshow');
+    EventHandler.getInstance().registerClick(this.menuCatalogueBtn, (e) => {
+        if (e.target.classList.contains('menu-catalogue')) {
+          if (modal.classList.contains('notshow')) {
+            modal.classList.remove('notshow');
+          } else {
+            modal.classList.add('notshow');
+          }
         }
-      } else if (!modal.classList.contains('notshow') && !modal.contains(e.target)) {
-        modal.classList.add('notshow');
-      }
-    })
+    });
+
 
     const page = document.querySelector('.page');
     //滚轮事件
@@ -117,41 +115,69 @@ export class ViewManager {
     });
 
     EventHandler.getInstance().registerClick(page, () => {
-      this.hideMenu()
+      const isMobile = window.matchMedia('(pointer: coarse)').matches;
+      const menuStatus = this.checkMenuStatus();
+      console.log(isMobile)
+      if (menuStatus === true) {
+        this.hideMenu();
+        return;
+      } else if(isMobile){
+        this.nextPage();
+      }
     });
 
     // 移动端手势
 
     EventHandler.getInstance().registerSwipe(page, {
-      swipeLeft: () => { this.nextPage(); this.hideMenu() },
-      swipeRight: () => { this.prevPage(); this.hideMenu() },
+      swipeLeft: () => { this.nextPage(); },
+      swipeRight: () => { this.prevPage(); },
       swipeUp: () => this.showMenu(),
       swipeDown: () => this.hideMenu(),
     });
   }
 
   updateLayout() {
-    this.isMobile = window.innerWidth < 768;
-    this.pageSize = this.isMobile ? 1500 : 3000;
+    const isMobile = window.matchMedia('(pointer: coarse)').matches;
+    this.pageSize = isMobile ? 1500 : 3000;
     // this.virtualScroller.updatePageSize(this.pageSize);
-    this.container.classList.toggle('mobile', this.isMobile);
+    this.container.classList.toggle('mobile',isMobile);
   }
 
   prevPage() {
+    const menuStatus = this.checkMenuStatus();
+    if (menuStatus === true) {
+      this.hideMenu();
+      return;
+    }
     const pageInfo = this.virtualScroller.prevPage();
     // this.updateProgress();
   }
 
   nextPage() {
+    const menuStatus = this.checkMenuStatus();
+    if (menuStatus === true) {
+      this.hideMenu();
+      return;
+    }
     const pageInfo = this.virtualScroller.nextPage();
     // this.updateProgress();
+  }
+
+  checkMenuStatus() {
+    const modal = document.querySelector('.modal');
+    if (modal.classList.contains('notshow')) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   showMenu() {
     // const menu = document.querySelector('.menu');
     // menu.style.bottom = '0';
+    const menuStatus = this.checkMenuStatus();
     const modal = document.querySelector('.modal');
-    if (modal.classList.contains('notshow')) {
+    if (menuStatus === false) {
       modal.classList.remove('notshow');
     }
   }
@@ -163,12 +189,11 @@ export class ViewManager {
     //   menu.style.bottom = '-100px';
     // }
 
+    const menuStatus = this.checkMenuStatus();
     const modal = document.querySelector('.modal');
-    if (!modal.classList.contains('notshow')) {
+    if (menuStatus === true) {
       modal.classList.add('notshow');
     }
-
-
   }
 
   updateProgress() {
@@ -206,10 +231,18 @@ export class ViewManager {
     if (!this.modalFormCheckbox.checked) {
       const input = document.querySelector('.search-input');
       const value = Number(input.value) - 1;
-      this.virtualScroller.goToPage(value < 0 ? 0 : value);
+      //如果未输入值，则重置章节列表
+      if(value < 0) {
+        const reloadMenuListResult = EventHandler.getInstance().emit('reload-menulist');
+        // console.log(reloadMenuListResult)
+        this.updateMenuList(reloadMenuListResult['reload-menulist']);
+      } else {
+        this.virtualScroller.goToPage(value);
+      }
+      // this.virtualScroller.goToPage(value < 0 ? 0 : value);
       console.log(value);
       input.value = '';
-      this.modal.classList.add('notshow');
+      // this.modal.classList.add('notshow');
     } else {
       let result = {}
       if (!this.modalFormInput.value) {

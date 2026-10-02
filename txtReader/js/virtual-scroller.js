@@ -73,6 +73,18 @@ export class VirtualScroller {
         document.querySelector('.chapter-name').textContent = chapter.title;
         // EventHandler.getInstance().emit('chapterChange', index);
         this.currentChapter = index;
+        // 修改列表，标记当前再读
+        document.querySelectorAll('.active-chapter').forEach(item => {
+          item.classList.remove('active-chapter');
+        });
+        const menuList = document.querySelectorAll('.menu-listitem');
+        const activeItem = Array.from(menuList).find((item, index, cur) => {
+          if(index === cur.length - 1) return true;
+          else return end <= cur[index + 1].dataset.index;
+        })
+        activeItem.classList.add('active-chapter');
+        // menuList[index].style.color = 'red';
+        // console.log(index, end,menuList)
         break;
       }
     }

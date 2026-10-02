@@ -34,6 +34,7 @@ class NovelReader {
     try {
       // this.chunkedString._init(content);
       const processedData = this.dataProcessor.process(content);
+      this.processedData = processedData;
       this.viewManager.render(processedData);
       // this.viewManager.updateProgress();
     } catch (error) {
@@ -61,6 +62,11 @@ class NovelReader {
     this.eventHandler.on('reprocess-chapters', (text, options) => {
       console.log(options)
       const chapters = this.dataProcessor.splitChapters(text, options?.chapterRegex);
+      return chapters;
+    });
+    // 新增监听：重置章节列表
+    this.eventHandler.on('reload-menulist', () => {
+      const chapters = this.processedData.chapters;
       return chapters;
     });
   }
@@ -122,7 +128,7 @@ else {
 
     // 读取文件内容为文本
     reader.utils.getChar(response).then(data => {
-      data = data.replaceAll(/(\r?\n)+/g,'\n').replaceAll(/\n +/g,'\n');
+      data = data.replaceAll(/(\r?\n)+/g, '\n').replaceAll(/\n +/g, '\n');
       reader.load(data)
     })
   }).catch(error => {

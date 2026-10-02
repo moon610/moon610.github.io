@@ -75,7 +75,7 @@ export class EventHandler {
             const deltaX = Math.abs(touch.clientX - touchStartX);
             const deltaY = Math.abs(touch.clientY - touchStartY);
             const deltaT = Date.now() - touchStartTime;
-            if (deltaT < 300 && deltaX < 10 && deltaY < 10) {
+            if (deltaT < 500 && deltaX < 10 && deltaY < 10) {
                 handler(e);
                 // console.log('touch click')
             }
@@ -83,7 +83,9 @@ export class EventHandler {
         })
 
         triggerContainer.addEventListener('click', (e) => {
-            if (this.isMobile) {
+            e.stopPropagation();
+            const isMobile = window.matchMedia('(pointer: coarse)').matches;
+            if (isMobile) {
                 return;
             }
             handler(e);
@@ -107,20 +109,25 @@ export class EventHandler {
             touchStartTime = Date.now();
         });
 
-        triggerContainer.addEventListener('touchmove', (e) => {
-            touchEndX = e.touches[0].clientX;
-            touchEndY = e.touches[0].clientY;
-            touchEndTime = Date.now();
-            // console.log(touchEndX)
-        });
+        // triggerContainer.addEventListener('touchmove', (e) => {
+        // touchEndX = e.touches[0].clientX;
+        // touchEndY = e.touches[0].clientY;
+        // touchEndTime = Date.now();
+        // console.log(touchEndX)
+        // });
 
         triggerContainer.addEventListener('touchend', (e) => {
             // console.log(e.target)
+            touchEndX = e.changedTouches[0].clientX;
+            touchEndY = e.changedTouches[0].clientY;
+            touchEndTime = Date.now();
+            console.log(touchStartX, touchEndX)
             const deltaX = touchEndX - touchStartX
             const deltaY = touchEndY - touchStartY;
             const deltaT = touchEndTime - touchStartTime;
             const touchSpeedX = deltaX / deltaT;
             const touchSpeedY = deltaY / deltaT;
+            if (deltaT > 500) return;
             if (touchSpeedX > 0.2 && Math.abs(touchSpeedX) > Math.abs(touchSpeedY)) {
                 handler.swipeRight();
             }
@@ -133,7 +140,11 @@ export class EventHandler {
             if (touchSpeedY < -0.2 && Math.abs(touchSpeedY) > Math.abs(touchSpeedX)) {
                 handler.swipeUp();
             }
-            // console.log(touchSpeed)
+            // console.log(touchSpeedX,touchSpeedY,deltaT,deltaX,deltaY)
+        })
+
+        triggerContainer.addEventListener('touchcancel', (e) => {
+            handler = null;
         })
     }
 
