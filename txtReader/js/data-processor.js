@@ -1,9 +1,11 @@
 // 数据处理模块：data-processor.js
 import { EventHandler } from "./event-handler.js";
+import { Utils } from './util.js';
 export class DataProcessor {
   constructor(options) {
     this.chapterRegex = options.chapterRegex;
     this.adPatterns = options.adPatterns;
+    this.Utils = new Utils();
     // this.worker = new DataWorker();
   }
 
@@ -107,13 +109,12 @@ export class DataProcessor {
   }
 
   filterAds(text) {
+    const paragraphs = text.split(/\r?\n|\r/);
 
-    const paragraphs = text.split(/\n\s*\n/);
-
-    // 5. 首行缩进 + 清洗每段前后空格
+    // 清洗每段前后空格及空白行
     return paragraphs
-      .filter(p => p.trim().length > 0)
-      .map(p => `　　${p.trim()}`).join('\n');
+      .filter(p => this.Utils.fullTrim(p).length > 0)
+      .map(p => `${this.Utils.fullTrim(p)}`).join('\n');
 
     // return this.adPatterns.reduce((str, pattern) =>
     //   str.replace(pattern, ''), text);

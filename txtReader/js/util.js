@@ -131,4 +131,11 @@ export class Utils {
         // 如果非法字符超过 30%，则认为是乱码
         return invalidRatio > 0.08;
     }
+
+
+    //重写trim方法，解决部分空白字符无法去掉的问题
+    fullTrim(str) {
+        // 去掉开头结尾所有Unicode空白，包括nbsp、em‑space、零宽空白
+        return str.replace(/^\p{White_Space}+|\p{White_Space}+$/gu, '');
+    }
 }
